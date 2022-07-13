@@ -13,6 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../model/message_model.dart';
+
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit() : super(ChatInitial());
 
@@ -28,15 +30,13 @@ class ChatCubit extends Cubit<ChatState> {
   UserModel registerUser = UserModel();
 
   List<UserModel> user = [];
-  var snapshot;
 
-  List<UserModel> AllUsers = [
-    // UserModel(
-    //     name: 'walid',
-    //     email: 'leadermatrix@yahoo.com',
-    //     photoUrl:
-    //         'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif')
-  ];
+  var snapshot;
+  List<MessageModel> AllMessages = [];
+
+  final scrollController = ScrollController();
+
+  List<UserModel> AllUsers = [];
 
   ImagePicker imagePicker = ImagePicker();
   XFile? userImage;
@@ -52,6 +52,7 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   registerByEmailAndPassword(String email, String password, String name) async {
+    //check in authentication
     UserCredential credential = await auth.createUserWithEmailAndPassword(
         email: email, password: password);
 
@@ -74,6 +75,7 @@ class ChatCubit extends Cubit<ChatState> {
         .child('${registerUser.id}.jpg')
         .getDownloadURL();
 
+    //add to firestore
     await firestore
         .collection('users')
         .doc(registerUser.id)
@@ -91,9 +93,11 @@ class ChatCubit extends Cubit<ChatState> {
     //
     // registerUser = UserModel.fromJson(snapshot.data());
 
+    //check in authentication
     UserCredential userCredential =
         await auth.signInWithEmailAndPassword(email: email, password: password);
 
+    //carry data from firestore
     snapshot =
         await firestore.collection('users').doc(userCredential.user!.uid).get();
     registerUser = UserModel.fromJson(snapshot.data()!);
@@ -134,6 +138,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   getAllUser() async {
     AllUsers = [];
+    //get data from firestore and put it in allUsers based on UserModel
     var docs = await firestore
         .collection('users')
         .where('id', isNotEqualTo: registerUser.id)
@@ -143,5 +148,53 @@ class ChatCubit extends Cubit<ChatState> {
       print(AllUsers.length);
     });
     emit(ChatGetAllUsersState());
+  }
+
+  SendMessage(String mess, int index) async {
+    MessageModel messageModel = MessageModel(
+        time: DateTime.now(),
+        title: mess,
+        senderId: registerUser.id,
+        messageId: '${registerUser.id}$index',
+        recieverId: '$index'
+    );
+    AllMessages.add(messageModel);
+    await scrollController.animateTo(scrollController.position.maxScrollExtent + 90, duration: Duration(milliseconds: 300), curve: Curves.linear);
+    await firestore.collection('chat').doc().set(messageModel.toJson());
+  }
+
+  //unused function **********************************
+  getAllMessages(int index) async {
+    AllMessages = [];
+    //get messages from firestore
+    await firestore
+        .collection('chat')
+        .where('messageId', whereIn: [
+          '${registerUser.id}${user[index].id}',
+          '${user[index].id}${registerUser.id}'
+        ])
+        .snapshots()
+        .listen((event) async {
+          if (AllMessages.isEmpty) {
+            var message = await firestore
+                .collection('chat')
+                .where('messageId', whereIn: [
+                  '${registerUser.id}${user[index].id}',
+                  '${user[index].id}${registerUser.id}'
+                ])
+                .orderBy('time')
+                .get();
+            message.docs.forEach((element) {
+              MessageModel m = MessageModel.fromJson(element.data());
+              AllMessages.add(m);
+            });
+
+            emit(ChatGetAllMessagesState());
+          } else {
+            AllMessages.add(
+                MessageModel.fromJson(event.docChanges.first.doc.data()!));
+            emit(ChatGetAllMessagesState());
+          }
+        });
   }
 }

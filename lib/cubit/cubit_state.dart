@@ -9,3 +9,6 @@ class ChatCreateUserSuccessState extends ChatState {}
 class ChatChangePassState extends ChatState {}
 
 class ChatGetAllUsersState extends ChatState {}
+
+class ChatGetAllMessagesState extends ChatState {}
+

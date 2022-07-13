@@ -1,5 +1,6 @@
 import 'package:firebasefortest/component/color.dart';
 import 'package:firebasefortest/cubit/cubit_cubit.dart';
+import 'package:firebasefortest/screens/chat_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -77,60 +78,82 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        Icon(Icons.search,size: 30,),
+                        Icon(
+                          Icons.search,
+                          size: 30,
+                        ),
                         SizedBox(
                           width: 10,
                         ),
-                        Text('Search',style: TextStyle(fontSize: 20),)
+                        Text(
+                          'Search',
+                          style: TextStyle(fontSize: 20),
+                        )
                       ],
                     ),
                   ),
                   SizedBox(
                     height: 15,
                   ),
-                  ListView.separated(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              children: [
-                                Stack(
-                                  alignment: AlignmentDirectional.bottomEnd,
+                  Expanded(
+                    child: ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) => InkWell(
+                              onTap: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatPage(
+                                            name: '${Cubit.AllUsers[index].name}',
+                                            //we can replace index with ${Cubit.AllUsers[index].id}
+                                            index: index)));
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
                                   children: [
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: NetworkImage(
-                                          '${Cubit.AllUsers[index].photoUrl}'),
-                                      backgroundColor: Colors.transparent,
+                                    Stack(
+                                      alignment: AlignmentDirectional.bottomEnd,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: NetworkImage(
+                                              '${Cubit.AllUsers[index].photoUrl}'),
+                                          backgroundColor: Colors.transparent,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                                  bottom: 1.0, end: 1.0),
+                                          child: CircleAvatar(
+                                            radius: 7,
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                          bottom: 1.0, end: 1.0),
-                                      child: CircleAvatar(
-                                        radius: 7,
-                                        backgroundColor: Colors.green,
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            Cubit.AllUsers[index].name!,
+                                            style: TextStyle(fontSize: 15),
+                                          )
+                                        ],
                                       ),
                                     )
                                   ],
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(Cubit.AllUsers[index].name!,
-                                      style: TextStyle(fontSize: 15),)
-                                    ],
-                                  ),
-                                )
-                              ],
+                              ),
                             ),
-                          ),
-                      separatorBuilder: (context, index) => Divider(
-                            color: Colors.grey,
-                          ),
-                      itemCount: Cubit.AllUsers.length)
+                        separatorBuilder: (context, index) => Divider(
+                              color: Colors.grey,
+                            ),
+                        itemCount: Cubit.AllUsers.length),
+                  )
                 ],
               ),
             ),
@@ -152,7 +175,10 @@ class _HomePageState extends State<HomePage> {
                         child: FloatingActionButton(
                           onPressed: () {},
                           backgroundColor: kSecondaryColor,
-                          child: Icon(Icons.add,size: 30,),
+                          child: Icon(
+                            Icons.add,
+                            size: 30,
+                          ),
                           elevation: 0.1,
                         ),
                       ),
@@ -163,19 +189,29 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
-                                onPressed: () {}, icon: Icon(Icons.home),color: Colors.white,iconSize: 30,),
+                              onPressed: () {},
+                              icon: Icon(Icons.home),
+                              color: Colors.white,
+                              iconSize: 30,
+                            ),
                             IconButton(
                                 onPressed: () {},
-                                icon: Icon(Icons.account_circle_outlined),color: Colors.white,iconSize: 30),
+                                icon: Icon(Icons.account_circle_outlined),
+                                color: Colors.white,
+                                iconSize: 30),
                             Container(
                               width: size.width * 0.20,
                             ),
                             IconButton(
                                 onPressed: () {},
-                                icon: Icon(Icons.notifications),color: Colors.white,iconSize: 30),
+                                icon: Icon(Icons.notifications),
+                                color: Colors.white,
+                                iconSize: 30),
                             IconButton(
                                 onPressed: () {},
-                                icon: Icon(Icons.help_outline),color: Colors.white,iconSize: 30),
+                                icon: Icon(Icons.help_outline),
+                                color: Colors.white,
+                                iconSize: 30),
                           ],
                         ),
                       )

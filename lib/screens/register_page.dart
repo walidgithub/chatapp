@@ -1,10 +1,12 @@
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebasefortest/component/color.dart';
 import 'package:firebasefortest/component/component.dart';
 import 'package:firebasefortest/cubit/cubit_state.dart';
 import 'package:firebasefortest/screens/homepage.dart';
 import 'package:firebasefortest/screens/login_page.dart';
+import 'package:firebasefortest/translation/locale_keys.g.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage>
                                 child: Column(
                                   children: [
                                     Text(
-                                      'Registration',
+                                      LocaleKeys.title_register.tr(),
                                       style: TextStyle(
                                           fontSize: 40,
                                           fontWeight: FontWeight.bold,
@@ -94,14 +96,14 @@ class _RegisterPageState extends State<RegisterPage>
                                     TextFieldWidget(
                                         controller: nameController,
                                         type: TextInputType.name,
-                                        label: 'Name'),
+                                        label: LocaleKeys.user_name.tr()),
                                     SizedBox(
                                       height: 20,
                                     ),
                                     TextFieldWidget(
                                         controller: emailController,
                                         type: TextInputType.emailAddress,
-                                        label: 'Email',
+                                        label: LocaleKeys.email.tr(),
                                         validator: (value) {
                                           if (value.length == 0) {
                                             return "Email can not be empty";
@@ -126,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage>
                                         },
                                         isPassword: Cubit.isPassword,
                                         // obscureText: Cubit.isPassword,
-                                        label: 'Password',
+                                        label: LocaleKeys.password.tr(),
                                         validator: (value) {
                                           if (value.length <= 6) {
                                             return "password must be greater than 6";
@@ -168,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage>
                                           // }
                                         },
                                         child: Text(
-                                          'Register',
+                                          LocaleKeys.buttom_register.tr(),
                                           style: TextStyle(fontSize: 20),
                                         ),
                                         style: ElevatedButton.styleFrom(
@@ -214,14 +216,14 @@ class _RegisterPageState extends State<RegisterPage>
                                         onPressed: () async {
                                           Cubit.Image('cam');
                                         },
-                                        child: Text('choose photo')),
+                                        child: Text(LocaleKeys.photo.tr())),
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           top: 20.0, left: 55.0),
                                       child: Row(
                                         children: [
                                           Text(
-                                            'Already have an account?',
+                                            LocaleKeys.have_account.tr(),
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 color: Colors.black),
@@ -235,19 +237,27 @@ class _RegisterPageState extends State<RegisterPage>
                                                           LoginPage()));
                                             },
                                             child: Text(
-                                              'Login',
+                                              LocaleKeys.login.tr(),
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   color: kPrimaryColor),
                                             ),
-                                          )
+                                          ),
+
                                         ],
                                       ),
-                                    )
+                                    ),
+
                                   ],
                                 ),
                               ),
                             ),
+                            // ElevatedButton(onPressed: () async{
+                            //   await context.setLocale(Locale('ar'));
+                            // }, child: Text('Ar')),
+                            // ElevatedButton(onPressed: () async{
+                            //   await context.setLocale(Locale('en'));
+                            // }, child: Text('En')),
                           ],
                         ),
                       ),

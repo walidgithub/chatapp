@@ -1,0 +1,10 @@
+{
+  "title_register": "Registration",
+  "user_name": "name",
+  "email": "email",
+  "password": "password",
+  "buttom_register": "register",
+  "have_account": "already have an account",
+  "login": "login",
+  "photo": "take photo"
+}

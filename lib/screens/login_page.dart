@@ -1,4 +1,5 @@
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebasefortest/component/component.dart';
 import 'package:firebasefortest/cubit/cubit_cubit.dart';
 import 'package:firebasefortest/screens/homepage.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../component/color.dart';
+import '../translation/locale_keys.g.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -73,7 +75,7 @@ class _LoginPageState extends State<LoginPage>
                           Padding(
                             padding: const EdgeInsets.only(top: 25, left: 15),
                             child: Text(
-                              "Login",
+                              LocaleKeys.login.tr(),
                               style: TextStyle(
                                   fontSize: 40,
                                   fontWeight: FontWeight.bold,
@@ -101,7 +103,7 @@ class _LoginPageState extends State<LoginPage>
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 10,right: 15,left: 5),
+                                    top: 10, right: 15, left: 5),
                                 child: Column(
                                   children: [
                                     SizedBox(
@@ -110,7 +112,7 @@ class _LoginPageState extends State<LoginPage>
                                     TextFieldWidget(
                                         controller: emailController,
                                         type: TextInputType.emailAddress,
-                                        label: "Email",
+                                        label: LocaleKeys.email.tr(),
                                         validator: (value) {
                                           if (value.length == 0) {
                                             return "Email Can not be empty ";
@@ -128,13 +130,20 @@ class _LoginPageState extends State<LoginPage>
                                     ),
                                     TextFieldWidget(
                                         controller: passwordController,
-                                        label: "Password",
                                         type: TextInputType.visiblePassword,
+                                        suffixIcon: Cubit.suffix,
+                                        suffixPressed: () {
+                                          Cubit.changePass();
+                                        },
+                                        isPassword: Cubit.isPassword,
+                                        // obscureText: Cubit.isPassword,
+                                        label: LocaleKeys.password.tr(),
                                         validator: (value) {
                                           if (value.length <= 6) {
-                                            return "password should be return 6";
+                                            return "password must be greater than 6";
+                                          } else {
+                                            return null;
                                           }
-                                          return null;
                                         }),
                                     SizedBox(
                                       height: 20,
@@ -152,7 +161,7 @@ class _LoginPageState extends State<LoginPage>
                                                   builder: (context) =>
                                                       HomePage()));
                                         },
-                                        child: Text("Login"),
+                                        child: Text(LocaleKeys.login.tr()),
                                         style: ElevatedButton.styleFrom(
                                             primary: kPrimaryColor,
                                             shape: RoundedRectangleBorder(
